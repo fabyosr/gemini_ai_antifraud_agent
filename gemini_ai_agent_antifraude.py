@@ -1,10 +1,6 @@
 import os
 import streamlit as st
 
-# Não precisa de load_dotenv() se usar st.secrets
-# gemini_api_key = os.getenv("GEMINI_API_KEY") # REMOVA ESSA LINHA
-gemini_api_key = st.secrets["GEMINI_API_KEY"] # USE ESSA LINHA AGORA
-
 from google import genai
 from google.adk.agents import Agent
 from google.adk.runners import Runner
