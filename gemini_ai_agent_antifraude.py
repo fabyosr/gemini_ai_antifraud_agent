@@ -1,4 +1,11 @@
 import os
+import streamlit as st
+
+# Não precisa de load_dotenv() se usar st.secrets
+# gemini_api_key = os.getenv("GEMINI_API_KEY") # REMOVA ESSA LINHA
+gemini_api_key = st.secrets["GEMINI_API_KEY"] # USE ESSA LINHA AGORA
+# Outras chaves de API...
+
 from google import genai
 from google.adk.agents import Agent
 from google.adk.runners import Runner
@@ -9,7 +16,7 @@ from datetime import date
 import textwrap # Para formatar melhor a saída de texto
 import requests # Para fazer requisições HTTP
 
-os.environ["GOOGLE_API_KEY"] = userdata.get('GOOGLE_API_KEY')
+GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] 
 
 # Configura o cliente da SDK do Gemini
 client = genai.Client()
@@ -131,6 +138,54 @@ def agente_contextual(topico, busca_result):
     # Executa o agente
     final_result = call_agent(contextual, entrada_do_agente_contextual)
     return final_result
+
+st.title("🤖 Gemini Fraud Detector Chatbot")
+st.subheader("Cole ou digite a mensagem que você deseja verificar:")
+
+# Área para o usuário inserir a mensagem
+user_message = st.text_area("Mensagem:", height=200)
+
+if st.button("Analisar Mensagem"):
+if user_message:
+    st.markdown("---")
+    st.subheader("Análise da Mensagem:")
+
+# --- Agente de Análise Linguística ---
+    with st.spinner("Analisando padrões linguísticos..."):
+        linguistic_analysis = linguistic_agent.analyze(user_message)
+        st.markdown("#### Agente de Análise Linguística:")
+        st.info(linguistic_analysis)
+        st.markdown("---")
+
+    # --- Agente Especialista em Busca de Golpes ---
+    with st.spinner("Buscando informações relevantes..."):
+        search_results = search_agent.search(linguistic_analysis) # Ou use user_message diretamente, dependendo da sua lógica
+        st.markdown("#### Agente Especialista em Busca de Golpes:")
+        if search_results:
+            for i, result in enumerate(search_results):
+                st.markdown(f"**Resultado {i+1}:**")
+                st.write(result) # Ajuste como você exibe os resultados da busca
+        else:
+            st.warning("Nenhum resultado de busca relevante encontrado.")
+        st.markdown("---")
+
+    # --- Agente Contextual ---
+    with st.spinner("Contextualizando as informações..."):
+        contextual_analysis = contextual_agent.contextualize(user_message, linguistic_analysis, search_results)
+        st.markdown("#### Agente Contextual:")
+        if "probabilidade" in contextual_analysis.lower(): # Exemplo de como destacar a conclusão
+            if "alta" in contextual_analysis.lower():
+                st.error(contextual_analysis)
+            elif "baixa" in contextual_analysis.lower():
+                st.success(contextual_analysis)
+            else:
+                st.warning(contextual_analysis)
+        else:
+            st.info(contextual_analysis)
+        st.markdown("---")
+
+else:
+    st.warning("Por favor, digite ou cole uma mensagem para análise.")
 
 # --- Obter o Tópico do Usuário ---
 topico = input("❓ Por favor, digite o TÓPICO sobre o qual você quer verificar golpes e fraudes: ")
