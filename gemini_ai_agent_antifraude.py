@@ -4,7 +4,6 @@ import streamlit as st
 # Não precisa de load_dotenv() se usar st.secrets
 # gemini_api_key = os.getenv("GEMINI_API_KEY") # REMOVA ESSA LINHA
 gemini_api_key = st.secrets["GEMINI_API_KEY"] # USE ESSA LINHA AGORA
-# Outras chaves de API...
 
 from google import genai
 from google.adk.agents import Agent
@@ -146,67 +145,43 @@ st.subheader("Cole ou digite a mensagem que você deseja verificar:")
 user_message = st.text_area("Mensagem:", height=200)
 
 if st.button("Analisar Mensagem"):
-if user_message:
-    st.markdown("---")
-    st.subheader("Análise da Mensagem:")
-
-# --- Agente de Análise Linguística ---
-    with st.spinner("Analisando padrões linguísticos..."):
-        linguistic_analysis = linguistic_agent.analyze(user_message)
-        st.markdown("#### Agente de Análise Linguística:")
-        st.info(linguistic_analysis)
+    if user_message:
         st.markdown("---")
+        st.subheader("Análise da Mensagem:")
 
-    # --- Agente Especialista em Busca de Golpes ---
-    with st.spinner("Buscando informações relevantes..."):
-        search_results = search_agent.search(linguistic_analysis) # Ou use user_message diretamente, dependendo da sua lógica
-        st.markdown("#### Agente Especialista em Busca de Golpes:")
-        if search_results:
-            for i, result in enumerate(search_results):
-                st.markdown(f"**Resultado {i+1}:**")
-                st.write(result) # Ajuste como você exibe os resultados da busca
-        else:
-            st.warning("Nenhum resultado de busca relevante encontrado.")
-        st.markdown("---")
+        # --- Agente de Análise Linguística ---
+        with st.spinner("Analisando padrões linguísticos..."):
+            result_agent_core_antifraud = agente_core_antifraud(user_message)
+            st.markdown("#### Agente de Análise Linguística:")
+            st.info(result_agent_core_antifraud)
+            st.markdown("---")
 
-    # --- Agente Contextual ---
-    with st.spinner("Contextualizando as informações..."):
-        contextual_analysis = contextual_agent.contextualize(user_message, linguistic_analysis, search_results)
-        st.markdown("#### Agente Contextual:")
-        if "probabilidade" in contextual_analysis.lower(): # Exemplo de como destacar a conclusão
-            if "alta" in contextual_analysis.lower():
-                st.error(contextual_analysis)
-            elif "baixa" in contextual_analysis.lower():
-                st.success(contextual_analysis)
+        # --- Agente Especialista em Busca de Golpes ---
+        with st.spinner("Buscando informações relevantes..."):
+            result_agent_buscador = agente_buscador(user_message, result_agent_core_antifraud)
+            st.markdown("#### Agente Especialista em Busca de Golpes:")
+            if result_agent_buscador:
+                for i, result in enumerate(result_agent_buscador):
+                    st.markdown(f"**Resultado {i+1}:**")
+                    st.write(result) # Ajuste como você exibe os resultados da busca
             else:
-                st.warning(contextual_analysis)
-        else:
-            st.info(contextual_analysis)
-        st.markdown("---")
+                st.warning("Nenhum resultado de busca relevante encontrado.")
+            st.markdown("---")
+            
+        # --- Agente Contextual ---
+        with st.spinner("Contextualizando as informações..."):
+            result_agent_contextual = agente_contextual(user_message, result_agent_buscador)
 
-else:
-    st.warning("Por favor, digite ou cole uma mensagem para análise.")
-
-# --- Obter o Tópico do Usuário ---
-topico = input("❓ Por favor, digite o TÓPICO sobre o qual você quer verificar golpes e fraudes: ")
-
-# Inserir lógica do sistema de agentes ################################################
-if not topico:
-    print("Você esqueceu de digitar o tópico!")
-else:
-    print(f"Maravilha! Vamos verificar se a mensagem informada se trata de um fraude ou golpe. {topico}")
-
-    result_agent_core_antifraud = agente_core_antifraud(topico)
-    print("\n--- 📝 Resultado do Agente 1 (core_antifraud) ---\n")
-    display(to_markdown(result_agent_core_antifraud))
-    print("--------------------------------------------------------------\n\n")
-
-    result_agent_buscador = agente_buscador(topico, result_agent_core_antifraud)
-    print("\n--- 📝 Resultado do Agente 2 (buscador) ---\n")
-    display(to_markdown(result_agent_buscador))
-    print("--------------------------------------------------------------\n\n")
-
-    result_agent_contextual = agente_contextual(topico, result_agent_buscador)
-    print("\n--- 📝 Resultado do Agente 3 (Contextual) ---\n")
-    display(to_markdown(result_agent_contextual))
-    print("--------------------------------------------------------------")
+            st.markdown("#### Agente Contextual:")
+            if "probabilidade" in result_agent_contextual.lower(): # Exemplo de como destacar a conclusão
+                if "alta" in result_agent_contextual.lower():
+                    st.error(result_agent_contextual)
+                elif "baixa" in result_agent_contextual.lower():
+                    st.success(result_agent_contextual)
+                else:
+                    st.warning(result_agent_contextual)
+            else:
+                st.info(result_agent_contextual)
+            st.markdown("---")
+    else:
+        st.warning("Por favor, digite ou cole uma mensagem para análise.")
