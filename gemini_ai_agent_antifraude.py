@@ -67,7 +67,7 @@ def agente_core_antifraud(topico):
     entrada_do_agente_core_antifraud = f"Tópico: {topico}"
 
     lancamentos = call_agent(core_antifraud, entrada_do_agente_core_antifraud)
-    return 'hahahahahahahah' + lancamentos
+    return entrada_do_agente_core_antifraud + lancamentos
 
 ################################################
 # --- Agente 2: Especialista em buscas na internet --- #
