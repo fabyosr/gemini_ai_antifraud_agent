@@ -182,12 +182,12 @@ if st.button("Analisar Mensagem"):
         with st.spinner("Buscando informações relevantes..."):
             result_agent_buscador = agente_buscador(user_message, result_agent_core_antifraud)
             st.markdown("#### Agente Especialista em Busca de Golpes:")
-            if result_agent_buscador:
-                for i, result in enumerate(result_agent_buscador):
-                    st.markdown(f"**Resultado {i+1}:**")
-                    st.write(result) # Ajuste como você exibe os resultados da busca
-            else:
-                st.warning("Nenhum resultado de busca relevante encontrado.")
+            # if result_agent_buscador:
+            #  for i, result in enumerate(:
+            #       st.markdown(f"**Resultado {i+1}:**")
+            #st.write(result_agent_buscador) # Ajuste como você exibe os resultados da busca
+            #else:
+            #   st.warning("Nenhum resultado de busca relevante encontrado.")
             st.markdown("---")
             
         # --- Agente Contextual ---
