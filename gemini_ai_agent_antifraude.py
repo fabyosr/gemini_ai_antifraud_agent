@@ -16,13 +16,14 @@ GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 # Configura o cliente da SDK do Gemini
 client = genai.Client()
 MODEL_ID = "gemini-2.0-flash"
+# Cria um serviço de sessão em memória
+session_service = InMemorySessionService()
 
 # Função auxiliar que envia uma mensagem para um agente via Runner e retorna a resposta final
 def call_agent(agent: Agent, message_text: str) -> str:
-    # Cria um serviço de sessão em memória
-    session_service = InMemorySessionService()
+   
     # Cria uma nova sessão (você pode personalizar os IDs conforme necessário)
-    session = session_service.create_session(app_name=agent.name, user_id="user1", session_id="session1")
+    session = await session_service.create_session(app_name=agent.name, user_id="user1", session_id="session1")
     # Cria um Runner para o agente
     runner = Runner(agent=agent, app_name=agent.name, session_service=session_service)
     # Cria o conteúdo da mensagem de entrada
@@ -30,7 +31,7 @@ def call_agent(agent: Agent, message_text: str) -> str:
 
     final_response = ""
     # Itera assincronamente pelos eventos retornados durante a execução do agente
-    for event in runner.run(user_id="user1", session_id="session1", new_message=content):
+    for event in runner.run_async(user_id="user1", session_id="session1", new_message=content):
         if event.is_final_response():
           for part in event.content.parts:
             if part.text is not None:
