@@ -48,7 +48,7 @@ def to_markdown(text):
 # --- Agente 1: Agente Principal: Classificador de fraudes (CORE-ANTIFRAUD) --- #
 ##########################################
 
-def agente_core_antifraud(topico):
+async def agente_core_antifraud(topico):
 
     core_antifraud = Agent(
         name="agente_core_antifraude",
@@ -67,14 +67,14 @@ def agente_core_antifraud(topico):
 
     entrada_do_agente_core_antifraud = f"Tópico: {topico}"
 
-    lancamentos = call_agent(core_antifraud, entrada_do_agente_core_antifraud)
+    lancamentos = await call_agent(core_antifraud, entrada_do_agente_core_antifraud)
     return lancamentos
 
 ################################################
 # --- Agente 2: Especialista em buscas na internet --- #
 ################################################
 
-def agente_buscador(topico, lancamentos_buscados):
+async def agente_buscador(topico, lancamentos_buscados):
     buscador = Agent(
         name="agente_buscador",
         model="gemini-2.0-flash",
@@ -99,14 +99,14 @@ def agente_buscador(topico, lancamentos_buscados):
 
     entrada_do_agente_buscador = f"Tópico:{topico}\nLançamentos buscados: {lancamentos_buscados}"
     # Executa o agente
-    busca_result = call_agent(buscador, entrada_do_agente_buscador)
+    busca_result = await call_agent(buscador, entrada_do_agente_buscador)
     return busca_result
 
 ################################################
 # --- Agente 2: Contextual --- #
 ################################################
 
-def agente_contextual(topico, busca_result):
+async def agente_contextual(topico, busca_result):
     contextual = Agent(
         name="agente_buscador",
         model="gemini-2.0-flash",
@@ -132,7 +132,7 @@ def agente_contextual(topico, busca_result):
 
     entrada_do_agente_contextual = f"Tópico:{topico}\nResultados buscados: {busca_result}"
     # Executa o agente
-    final_result = call_agent(contextual, entrada_do_agente_contextual)
+    final_result = await call_agent(contextual, entrada_do_agente_contextual)
     return final_result
 
 st.title("🤖 Gemini Fraud Detector Chatbot")
