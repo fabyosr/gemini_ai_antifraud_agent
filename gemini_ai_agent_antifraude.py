@@ -20,7 +20,7 @@ MODEL_ID = "gemini-2.0-flash"
 session_service = InMemorySessionService()
 
 # Função auxiliar que envia uma mensagem para um agente via Runner e retorna a resposta final
-def call_agent(agent: Agent, message_text: str) -> str:
+async def call_agent(agent: Agent, message_text: str) -> str:
    
     # Cria uma nova sessão (você pode personalizar os IDs conforme necessário)
     session = await session_service.create_session(app_name=agent.name, user_id="user1", session_id="session1")
