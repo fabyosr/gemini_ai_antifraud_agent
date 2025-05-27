@@ -149,6 +149,7 @@ if st.button("Analisar Mensagem"):
         # --- Agente de Análise Linguística ---
         with st.spinner("Analisando padrões linguísticos..."):
             result_agent_core_antifraud = agente_core_antifraud(user_message)
+            print(result_agent_core_antifraud)
             st.markdown("#### Agente de Análise Linguística:")
             st.markdown(result_agent_core_antifraud)
             st.info(result_agent_core_antifraud)
