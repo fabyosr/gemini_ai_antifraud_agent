@@ -135,7 +135,7 @@ async def agente_contextual(topico, busca_result):
     return final_result
 
 async def async_function_agente_buscador(user_message, result_agent_core_antifraud):
-    return await agente_buscador(user_message, result_agent_core_antifraud):
+    return await agente_buscador(user_message, result_agent_core_antifraud)
 
 
 st.title("🤖 Gemini Chatbot Detector de Golpes/Fraudes")
