@@ -134,7 +134,7 @@ async def agente_contextual(topico, busca_result):
     final_result = await call_agent(contextual, entrada_do_agente_contextual)
     return final_result
 
-async def await async_function_agente_buscador(user_message, result_agent_core_antifraud):
+async def async_function_agente_buscador(user_message, result_agent_core_antifraud):
     return await agente_buscador(user_message, result_agent_core_antifraud):
 
 
