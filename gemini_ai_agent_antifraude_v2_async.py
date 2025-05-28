@@ -1,5 +1,6 @@
 import os
 import streamlit as st
+import asyncio
 
 from google import genai
 from google.adk.agents import Agent
@@ -133,6 +134,10 @@ async def agente_contextual(topico, busca_result):
     final_result = await call_agent(contextual, entrada_do_agente_contextual)
     return final_result
 
+async def await async_function_agente_buscador(user_message, result_agent_core_antifraud):
+    return await agente_buscador(user_message, result_agent_core_antifraud):
+
+
 st.title("🤖 Gemini Chatbot Detector de Golpes/Fraudes")
 st.subheader("Cole ou digite a mensagem que você deseja verificar:")
 
@@ -154,7 +159,7 @@ if st.button("Analisar Mensagem"):
 
         # --- Agente Especialista em Busca de Golpes ---
         with st.spinner("Buscando informações relevantes..."):
-            result_agent_buscador = await agente_buscador(user_message, result_agent_core_antifraud)
+            result_agent_buscador = asyncio.run(async_function_agente_buscador(user_message, result_agent_core_antifraud))
             st.markdown("#### Agente Especialista em Busca de Golpes:")
             if result_agent_buscador:
                 #for i, result in enumerate(result_agent_buscador):
