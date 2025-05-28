@@ -137,6 +137,11 @@ async def agente_contextual(topico, busca_result):
 async def async_function_agente_buscador(user_message, result_agent_core_antifraud):
     return await agente_buscador(user_message, result_agent_core_antifraud)
 
+async def async_function_agente_core_antifraud(user_message):
+    return await agente_core_antifraud(user_message)
+
+async def async_function_agente_contextual(user_message):
+    return await agente_contextual(user_message, result_agent_buscador)
 
 st.title("🤖 Gemini Chatbot Detector de Golpes/Fraudes")
 st.subheader("Cole ou digite a mensagem que você deseja verificar:")
@@ -151,7 +156,7 @@ if st.button("Analisar Mensagem"):
 
         # --- Agente de Análise Linguística ---
         with st.spinner("Analisando padrões linguísticos..."):
-            result_agent_core_antifraud = await agente_core_antifraud(user_message)
+            result_agent_core_antifraud = asyncio.run(async_function_agente_core_antifraud(user_message))
             st.markdown("#### Agente de Análise Linguística:")
             st.markdown(result_agent_core_antifraud)
             st.info(result_agent_core_antifraud)
@@ -172,7 +177,7 @@ if st.button("Analisar Mensagem"):
             
         # --- Agente Contextual ---
         with st.spinner("Contextualizando as informações..."):
-            result_agent_contextual = await agente_contextual(user_message, result_agent_buscador)
+            result_agent_contextual = asyncio.run(async_function_agente_contextual(user_message, result_agent_buscador))
 
             st.markdown("#### Agente Contextual:")
             if "probabilidade" in result_agent_contextual.lower(): # Exemplo de como destacar a conclusão
