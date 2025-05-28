@@ -158,7 +158,7 @@ if st.button("Analisar Mensagem"):
         with st.spinner("Analisando padrões linguísticos..."):
             result_agent_core_antifraud = asyncio.run(async_function_agente_core_antifraud(user_message))
             st.markdown("#### Agente de Análise Linguística:")
-            st.markdown(result_agent_core_antifraud)
+            #st.markdown(result_agent_core_antifraud)
             st.info(result_agent_core_antifraud)
             st.markdown("---")
 
@@ -170,7 +170,8 @@ if st.button("Analisar Mensagem"):
                 #for i, result in enumerate(result_agent_buscador):
                 #    st.markdown(f"**Resultado {i+1}:**")
                 #    st.write(result) # Ajuste como você exibe os resultados da busca
-                st.markdown(result_agent_buscador)
+                #st.markdown(result_agent_buscador)
+                st.info(result_agent_core_antifraud)
             else:
                 st.warning("Nenhum resultado de busca relevante encontrado.")
             st.markdown("---")
