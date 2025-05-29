@@ -171,7 +171,7 @@ if st.button("Analisar Mensagem"):
                 #    st.markdown(f"**Resultado {i+1}:**")
                 #    st.write(result) # Ajuste como você exibe os resultados da busca
                 #st.markdown(result_agent_buscador)
-                st.info(result_agent_core_antifraud)
+                st.info(result_agent_buscador)
             else:
                 st.warning("Nenhum resultado de busca relevante encontrado.")
             st.markdown("---")
